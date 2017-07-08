@@ -44,14 +44,17 @@ public class UserMealsUtil {
         //insert into dateCalories
         //select dateTime, calories
         //from mealList
-        Map<LocalDateTime, Integer> mapDateCalories =  mealList.stream().
-               collect(Collectors.toMap(m -> m.getDateTime(), m -> m.getCalories()));
+        Map<LocalDateTime, Integer> mapDateCalories = new HashMap<>();
+        mealList.stream()
+                .forEach(m -> mapDateCalories.put(m.getDateTime(), m.getCalories()));
 
         Map<LocalDate, Integer> mapGroupedResult = new HashMap<>();
         //select dateTime, sum(Calories)
         //from dateCalories
         //group by dateTime
-        mapDateCalories.entrySet().stream().collect(Collectors.groupingBy(m -> m.getKey().toLocalDate(), Collectors.summingInt(m -> m.getValue()))).forEach((key, value) -> mapGroupedResult.put(key, value));
+        mapDateCalories.entrySet().stream()
+                .collect(Collectors.groupingBy(m -> m.getKey().toLocalDate(), Collectors.summingInt(m -> m.getValue())))
+                .forEach((key, value) -> mapGroupedResult.put(key, value));
 
         //готовим финальный список
         List<UserMealWithExceed> result = new ArrayList<>();
