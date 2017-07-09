@@ -24,7 +24,10 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31,13,0), "Обед", 500),
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31,20,0), "Ужин", 510)
         );
-        getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12,0), 2000);
+        //getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12,0), 2000);
+
+        for (UserMealWithExceed umw: getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12,0), 2000))
+            System.out.println(umw);
 //        .toLocalDate();
 //        .toLocalTime();
     }
@@ -39,8 +42,6 @@ public class UserMealsUtil {
 
     //имплементация стримами
     public static List<UserMealWithExceed> getFilteredJava8(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO return filtered list with correctly exceeded field
-
         //insert into timeList
         //select *
         //from mealList
@@ -55,7 +56,9 @@ public class UserMealsUtil {
         //from mealList
         Map<LocalDateTime, Integer> mapDateCalories = new HashMap<>();
         mealList.stream()
-                .forEach(m -> mapDateCalories.put(m.getDateTime(), m.getCalories()));
+                .map(m ->  mapDateCalories.put(m.getDateTime(), m.getCalories()))
+                .collect(Collectors.toList());
+
 
         Map<LocalDate, Integer> mapGroupedResult = new HashMap<>();
         //select dateTime, sum(Calories)
@@ -63,7 +66,11 @@ public class UserMealsUtil {
         //group by dateTime
         mapDateCalories.entrySet().stream()
                 .collect(Collectors.groupingBy(m -> m.getKey().toLocalDate(), Collectors.summingInt(m -> m.getValue())))
-                .forEach((key, value) -> mapGroupedResult.put(key, value));
+                .entrySet().stream()
+                .map(m -> mapGroupedResult.put(m.getKey(), m.getValue()))
+                .collect(Collectors.toList());
+
+
 
         //готовим финальный список
         List<UserMealWithExceed> result = new ArrayList<>();
