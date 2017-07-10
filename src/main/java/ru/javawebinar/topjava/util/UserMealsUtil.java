@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExceed;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,8 +31,8 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExceed>  getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        return getFilteredJava8(mealList, startTime, endTime, caloriesPerDay);
-        //return getFilteredJava7(mealList, startTime, endTime, caloriesPerDay);
+        //return getFilteredJava8(mealList, startTime, endTime, caloriesPerDay);
+        return getFilteredJava7(mealList, startTime, endTime, caloriesPerDay);
     }
 
 
@@ -49,7 +50,7 @@ public class UserMealsUtil {
         List<UserMealWithExceed> result = new ArrayList<>();
         //filling the list
         mealList.stream()
-                .filter(mDT -> (!mDT.getDateTime().toLocalTime().isBefore(startTime) && !mDT.getDateTime().toLocalTime().isAfter(endTime)))
+                .filter(mDT -> TimeUtil.isBetween(mDT.getDateTime().toLocalTime(), startTime, endTime))
                 .forEach(n -> {
                     boolean exceed = (mapDateCalories.get(n.getDateTime().toLocalDate()) > caloriesPerDay);
 
@@ -70,10 +71,7 @@ public class UserMealsUtil {
             LocalDate key = meal.getDateTime().toLocalDate();
             Integer value = meal.getCalories();
 
-            value = (mapDateCalories.get(key) != null) ?
-                    mapDateCalories.get(key) + value :
-                    value;
-
+            value = mapDateCalories.getOrDefault(key, 0) + value;
             mapDateCalories.put(key, value);
         }
 
@@ -87,8 +85,7 @@ public class UserMealsUtil {
 
             LocalTime mealTime = meal.getDateTime().toLocalTime();
 
-            if (!mealTime.isBefore(startTime) &&
-                    !mealTime.isAfter(endTime))
+            if (TimeUtil.isBetween(mealTime, startTime, endTime))
                 result.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), exceed));
         }
 
