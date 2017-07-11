@@ -35,34 +35,30 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExceed>  getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        return getFilteredJava8(mealList, startTime, endTime, caloriesPerDay);
-        //return getFilteredJava7(mealList, startTime, endTime, caloriesPerDay);
+        //return getFilteredJava8(mealList, startTime, endTime, caloriesPerDay);
+        return getFilteredJava7(mealList, startTime, endTime, caloriesPerDay);
     }
 
 
     //implementation by streams
-    public static List<UserMealWithExceed> getFilteredJava8(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    private static List<UserMealWithExceed> getFilteredJava8(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> mapDateCalories =
         mealList.stream()
-                .collect(Collectors.groupingBy(m -> m.getDateTime().toLocalDate(), Collectors.summingInt(m -> m.getCalories())));
+                .collect(Collectors.groupingBy(m -> m.getDateTime().toLocalDate(), Collectors.summingInt(UserMeal::getCalories)));
 
         //the final list preparation
-        List<UserMealWithExceed> result =
-        //filling the list
-        mealList.stream()
+        return mealList.stream()
                 .filter(mDT -> TimeUtil.isBetween(mDT.getDateTime().toLocalTime(), startTime, endTime))
                 .map(n -> new UserMealWithExceed(n.getDateTime(),
                         n.getDescription(),
                         n.getCalories(),
                         (mapDateCalories.get(n.getDateTime().toLocalDate()) > caloriesPerDay)))
                 .collect(Collectors.toList());
-
-        return result;
     }
 
 
     //implementation by loops
-    public static List<UserMealWithExceed>  getFilteredJava7(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    private static List<UserMealWithExceed> getFilteredJava7(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
         Map<LocalDate, Integer> mapDateCalories = new HashMap<>();
         for (UserMeal meal: mealList) {
