@@ -17,7 +17,6 @@
     <c:set var="cleanedDateTime" value="${fn:replace(dateTime, 'T', ' ')}" />
     <fmt:parseDate value="${ cleanedDateTime }" pattern="yyyy-MM-dd HH:mm" var="parsedDateTime" type="both" />
     <c:set var = "exceed" value="${mU.exceed}" />
-
     <c:if test="${exceed == false}">
         <span style="color: red; ">
             <p>
