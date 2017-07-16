@@ -34,7 +34,7 @@ public class MealServlet extends HttpServlet {
     private List<MealWithExceed> mealsUtils = new ArrayList<>();
 
     public void init() {
-        mealsUtils = new MealsUtil().getFilteredWithExceeded(meals, LocalTime.of(0, 0), LocalTime.of(23, 59), 2000);
+        mealsUtils = new MealsUtil().getFilteredWithExceeded(meals, LocalTime.MIN, LocalTime.MAX, 2000);
     }
 
     @Override
