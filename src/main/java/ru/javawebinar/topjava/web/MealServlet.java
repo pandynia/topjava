@@ -47,7 +47,7 @@ public class MealServlet extends HttpServlet {
     }
 
     public void init() {
-        mealsUtils = new MealsUtil().getFilteredWithExceeded(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        mealsUtils = new MealsUtil().getFilteredWithExceeded(meals, LocalTime.MIN, LocalTime.MAX, 2000);
     }
 
     @Override
