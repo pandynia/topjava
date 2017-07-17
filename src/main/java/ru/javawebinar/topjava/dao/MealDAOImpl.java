@@ -1,17 +1,20 @@
-package ru.javawebinar.topjava.service;
+package ru.javawebinar.topjava.dao;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Ruslan on 16.07.2017.
  */
 public class MealDAOImpl implements MealDAO {
-    private List<Meal> meals;
+    private Map<Integer, Meal> meals = new HashMap<>();
 
-    public MealDAOImpl(List<Meal> meals) {
-        this.meals = meals;
+    @Override
+    public void insert(Meal meal) {
+        int mealsId = meals.size() + 1;
+        meals.put(mealsId, meal);
     }
 
     @Override
@@ -20,13 +23,12 @@ public class MealDAOImpl implements MealDAO {
     }
 
     @Override
-    public void update(Meal meal) {
-        int index = meals.indexOf(meal);
-        meals.set(index, meal);
+    public void update(int mealsId, Meal meal) {
+        meals.put(mealsId, meal);
     }
 
     @Override
-    public List<Meal> getAll() {
+    public Map<Integer, Meal> getAll() {
         return  meals;
     }
 
