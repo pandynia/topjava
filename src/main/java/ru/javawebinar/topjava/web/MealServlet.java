@@ -7,7 +7,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealWithExceed;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -64,6 +63,7 @@ public class MealServlet extends HttpServlet {
             mealDAO.delete(mealId);
             forward = LIST_MEALS;
             request.setAttribute("mealsUtils",getMealWithExceed(mealDAO.getAll()));
+
         } else if (action.equalsIgnoreCase("update")){
             forward = INSERT_OR_EDIT;
             int mealId = Integer.parseInt(request.getParameter("mealId"));
@@ -75,6 +75,7 @@ public class MealServlet extends HttpServlet {
 
             request.setAttribute("mealsUtils", getMealWithExceed(mealDAO.getAll()));
             log.debug("redirect to meals");
+            request.getRequestDispatcher(forward).forward(request,response);
         }
 
         request.getRequestDispatcher(forward).forward(request, response);
@@ -82,6 +83,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         int id = Integer.parseInt(request.getParameter("id"));
         LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("datetime"), formatter);
@@ -90,9 +92,11 @@ public class MealServlet extends HttpServlet {
         Meal meal = new Meal(dateTime, description, calories);
 
         mealDAO.update(id, meal);
-
-        RequestDispatcher view = request.getRequestDispatcher(LIST_MEALS);
+        log.debug("redirect to meals");
         request.setAttribute("meals", getMealWithExceed(mealDAO.getAll()));
-        view.forward(request, response);
+        response.sendRedirect("meals?action=list");
+
+
+        //view.forward(request, response);
     }
 }

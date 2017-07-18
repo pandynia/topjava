@@ -16,7 +16,7 @@
 </head>
 <body>
 
-<form method="POST" action="meals?action=list" name="frmAddEdit">
+<form method="POST" action="meals" name="frmAddEdit">
     Meal ID : <input type="text" readonly="readonly" name="id"
                      value="<c:out value="${mealId}" />" /> <br />
 
