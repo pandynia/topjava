@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import ru.javawebinar.topjava.dao.MealDAO;
 import ru.javawebinar.topjava.dao.MealDAOImpl;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.MealWithExceed;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,12 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -29,53 +25,40 @@ public class MealServlet extends HttpServlet {
     private final String INSERT_OR_EDIT = "/addeditform.jsp";
     private final String LIST_MEALS = "/meals.jsp";
 
-    public void init() {
+    @Override
+    public void init(ServletConfig servlet) throws ServletException {
+        super.init(servlet);
         mealDAO = new MealDAOImpl();
-        mealDAO.insert(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
-        mealDAO.insert(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
-        mealDAO.insert(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
-        mealDAO.insert(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
-        mealDAO.insert(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
-
-    }
-
-    private Map<Integer, MealWithExceed> getMealWithExceed(Map<Integer, Meal> mealMap) {
-        List<Meal> values = new ArrayList<Meal>(mealMap.values());
-        int i = 1;
-        List<MealWithExceed> exceedList = MealsUtil.getFilteredWithExceeded(values, LocalTime.MIN, LocalTime.MAX, 2000);
-
-        Map<Integer, MealWithExceed> mwe = new HashMap<>();
-        for (MealWithExceed meal : exceedList) {
-            mwe.put(i++, meal);
-        }
-
-        return mwe;
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String forward = "";
         String action = request.getParameter("action");
+        action = (action == null ? "" : action);
 
-        init();
         if (action.equalsIgnoreCase("delete")){
             int mealId = Integer.parseInt(request.getParameter("mealId"));
+            log.info(String.format("Delete with meal id %d", mealId));
             mealDAO.delete(mealId);
+            request.setAttribute("mealsUtils", MealsUtil.getFilteredWithExceeded(mealDAO.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
             forward = LIST_MEALS;
-            request.setAttribute("mealsUtils",getMealWithExceed(mealDAO.getAll()));
-
         } else if (action.equalsIgnoreCase("update")){
-            forward = INSERT_OR_EDIT;
             int mealId = Integer.parseInt(request.getParameter("mealId"));
             Meal meal = mealDAO.getById(mealId);
+            log.info(String.format("Starting update with meal %s and id %d", meal, mealId));
             request.setAttribute("mealId",  mealId);
             request.setAttribute("meals", meal);
-        } else if (action.equalsIgnoreCase("list")){
-            forward = LIST_MEALS;
+            forward = INSERT_OR_EDIT;
+        } else if (action.equalsIgnoreCase("insert")){
+            log.info("Starting insert a new meal");
+            forward = INSERT_OR_EDIT;
 
-            request.setAttribute("mealsUtils", getMealWithExceed(mealDAO.getAll()));
+        } else if (action.equalsIgnoreCase("list")){
+            log.info("Starting viewing list of meals");
+            request.setAttribute("mealsUtils", MealsUtil.getFilteredWithExceeded(mealDAO.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
             log.debug("redirect to meals");
-            request.getRequestDispatcher(forward).forward(request,response);
+            forward = LIST_MEALS;
         }
 
         request.getRequestDispatcher(forward).forward(request, response);
@@ -85,18 +68,20 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        int id = Integer.parseInt(request.getParameter("id"));
+        Integer id;
+        id = Objects.equals(request.getParameter("id"), "") ? null : Integer.parseInt(request.getParameter("id"));
         LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("datetime"), formatter);
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
         Meal meal = new Meal(dateTime, description, calories);
 
-        mealDAO.update(id, meal);
+        if (id == null)
+            mealDAO.insert(meal);
+        else
+            mealDAO.update(meal);
+
         log.debug("redirect to meals");
-        request.setAttribute("meals", getMealWithExceed(mealDAO.getAll()));
+        request.setAttribute("meals", MealsUtil.getFilteredWithExceeded(mealDAO.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
         response.sendRedirect("meals?action=list");
-
-
-        //view.forward(request, response);
     }
 }

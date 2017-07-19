@@ -13,6 +13,7 @@
 
 <table Border = "1" CellPadding = "10" CellSpacing = "2">
     <tr Height = 50 Width = 150>
+        <TH>ID</TH>
         <TH>Date Time</TH>
         <TH>Description</TH>
         <TH>Calories</TH>
@@ -20,20 +21,22 @@
     </tr>
 
     <c:forEach var="mU" items="${mealsUtils}">
-        <c:set var="mealId" value="${mU.key}"/>
-        <c:set var="val" value="${mU.value}"/>
-        <c:set var="dateTime" value="${val.dateTime}" />
+        <c:set var="mealId" value="${mU.id}"/>
+        <c:set var="dateTime" value="${mU.dateTime}" />
         <c:set var="cleanedDateTime" value="${fn:replace(dateTime, 'T', ' ')}" />
         <fmt:parseDate value="${ cleanedDateTime }" pattern="yyyy-MM-dd HH:mm" var="parsedDateTime" type="both" />
 
 
-        ${val.exceed ? "<tr style=\"color: red;\">" : "<tr style=\"color: green;\">"}
+        ${mU.exceed ? "<tr style=\"color: red;\">" : "<tr style=\"color: green;\">"}
+        <td>${mU.id}</td>
         <td><fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${parsedDateTime}" /></td>
-        <td>${val.description}</td>
-        <td>${val.calories}</td>
+        <td>${mU.description}</td>
+        <td>${mU.calories}</td>
         <td><a href="meals?action=update&mealId=<c:out value="${mealId}"/>">Update</a>/<a href="meals?action=delete&mealId=<c:out value="${mealId}"/>">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
+
+<a href="meals?action=insert">Insert</a>/
 </body>
 </html>
