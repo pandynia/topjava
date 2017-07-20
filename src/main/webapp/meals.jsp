@@ -1,3 +1,4 @@
+<%@ page import="ru.javawebinar.topjava.util.TimeUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -6,6 +7,11 @@
 <html>
 <head>
     <title>Meals</title>
+    <title>Meals</title>
+    <style>
+        .normal {color: green;}
+        .exceeded {color: red;}
+    </style>
 </head>
 <body>
 <h3><a href="index.jsp">Home</a></h3>
@@ -13,30 +19,25 @@
 
 <table Border = "1" CellPadding = "10" CellSpacing = "2">
     <tr Height = 50 Width = 150>
-        <TH>ID</TH>
+        <thead>
         <TH>Date Time</TH>
         <TH>Description</TH>
         <TH>Calories</TH>
         <th>Actions</th>
+        </thead>
     </tr>
 
-    <c:forEach var="mU" items="${mealsUtils}">
-        <c:set var="mealId" value="${mU.id}"/>
-        <c:set var="dateTime" value="${mU.dateTime}" />
-        <c:set var="cleanedDateTime" value="${fn:replace(dateTime, 'T', ' ')}" />
-        <fmt:parseDate value="${ cleanedDateTime }" pattern="yyyy-MM-dd HH:mm" var="parsedDateTime" type="both" />
-
-
-        ${mU.exceed ? "<tr style=\"color: red;\">" : "<tr style=\"color: green;\">"}
-        <td>${mU.id}</td>
-        <td><fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${parsedDateTime}" /></td>
-        <td>${mU.description}</td>
-        <td>${mU.calories}</td>
+    <c:forEach var="meal" items="${mealsUtils}">
+        <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.model.MealWithExceed" />
+        <tr class="${meal.exceed ? 'exceeded' : 'normal'}">
+        <td><%=TimeUtil.toString(meal.getDateTime())%></td>
+        <td>${meal.description}</td>
+        <td>${meal.calories}</td>
         <td><a href="meals?action=update&mealId=<c:out value="${mealId}"/>">Update</a>/<a href="meals?action=delete&mealId=<c:out value="${mealId}"/>">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
 
-<a href="meals?action=insert">Insert</a>/
+<a href="meals?action=insert">Insert</a>
 </body>
 </html>
