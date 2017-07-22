@@ -6,7 +6,7 @@ import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.UserUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -68,7 +68,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getBetween(LocalDateTime startDT, LocalDateTime endDT, int userId) {
+    public Collection<Meal> getBetween(LocalTime startDT, LocalTime endDT, int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
         if (!meals.isEmpty()) {
             return meals.values().stream().
