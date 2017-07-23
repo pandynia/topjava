@@ -14,10 +14,10 @@ public class UserUtil {
     );
 
     public static User getUser() {
-        return USERS.get(1);
+        return USERS.get(0);
     }
 
     public static User getAdmin() {
-        return USERS.get(2);
+        return USERS.get(1);
     }
 }

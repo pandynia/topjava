@@ -19,8 +19,17 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <h2>Meal list</h2>
-    <a href="meals?action=create">Add Meal</a>
+    <a href="meals?action=filter">Add Meal</a>
     <hr/>
+    <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
+    <form method="get" action="meals">
+        <input type="hidden" name="id" value="${meal.id}">
+        <dl>
+            <dt>Date From:</dt>
+            <dd><input type="datetime-local" value="${meal.dateTime}" name="dateTime"></dd>
+        </dl>
+    </form>
+
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>

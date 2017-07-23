@@ -1,6 +1,8 @@
 package ru.javawebinar.topjava.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtil {
@@ -13,4 +15,13 @@ public class DateTimeUtil {
     public static String toString(LocalDateTime ldt) {
         return ldt == null ? "" : ldt.format(DATE_TIME_FORMATTER);
     }
+
+    public static LocalTime parseToLT(String s){
+        return (s.isEmpty() ? null : LocalTime.parse(s));
+    }
+
+    public static LocalDate parseToLD(String s){
+        return (s.isEmpty() ? null : LocalDate.parse(s));
+    }
+
 }

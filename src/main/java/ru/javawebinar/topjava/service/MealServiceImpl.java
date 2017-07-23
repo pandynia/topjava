@@ -1,16 +1,18 @@
 package ru.javawebinar.topjava.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.to.MealWithExceed;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 import java.util.Collection;
 
+@Service
 public class MealServiceImpl implements MealService {
 
+    @Autowired
     private MealRepository repository;
 
     @Override
@@ -30,16 +32,12 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public Collection<MealWithExceed> getAll(int userId) {
-        return MealsUtil.getWithExceeded(repository.getAll(userId), MealsUtil.DEFAULT_CALORIES_PER_DAY);
-
+    public Collection<Meal> getAll(int userId) {
+        return repository.getAll(userId);
     }
 
     @Override
-    public Collection<MealWithExceed> getBetween(LocalTime startTime, LocalTime endTime, int userId) {
-        return MealsUtil.getFilteredWithExceeded(repository.getBetween(startTime, endTime, userId),
-                startTime,
-                endTime,
-                MealsUtil.DEFAULT_CALORIES_PER_DAY);
+    public Collection<Meal> getBetween(LocalDate startDate, LocalDate endDate, int userId) {
+        return repository.getBetween(startDate, endDate, userId);
     }
 }
