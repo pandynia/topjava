@@ -19,15 +19,24 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <h2>Meal list</h2>
-    <a href="meals?action=filter">Add Meal</a>
+    <a href="meals?action=add">Add Meal</a>
     <hr/>
-    <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="get" action="meals">
-        <input type="hidden" name="id" value="${meal.id}">
+
+    <form method="get" action="meals?action=all">
+
         <dl>
             <dt>Date From:</dt>
-            <dd><input type="datetime-local" value="${meal.dateTime}" name="dateTime"></dd>
+            <dd><input type="date" value="${startDate}" name="dateFrom"></dd>
+            <dt>Date To:</dt>
+            <dd><input type="date" value="${endDate}" name="dateTo"></dd>
         </dl>
+        <dl>
+            <dt>Time From:</dt>
+            <dd><input type="time" value="${startTime}" name="timeFrom"></dd>
+            <dt>Time To:</dt>
+            <dd><input type="time" value="${endTime}" name="timeTo"></dd>
+        </dl>
+        <button type="SUBMIT">Filter</button>
     </form>
 
     <table border="1" cellpadding="8" cellspacing="0">
