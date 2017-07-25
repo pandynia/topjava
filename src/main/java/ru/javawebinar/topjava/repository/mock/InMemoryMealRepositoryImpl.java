@@ -38,18 +38,17 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
             return null;
         }
 
-        repository.computeIfAbsent(userId, (User) -> new ConcurrentHashMap<Integer, Meal>()).put(meal.getId(), meal);
+        repository.computeIfAbsent(userId, ConcurrentHashMap::new).put(meal.getId(), meal);
         return meal;
     }
 
     @Override
     public boolean delete(int id, int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
-        if (!meals.isEmpty()) {
-            return meals.remove(id, meals.get(id));
-        } else {
+        if (meals == null || meals.isEmpty())
             return false;
-        }
+        else
+            return meals.remove(id, meals.get(id));
     }
 
     @Override
@@ -65,22 +64,22 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public Collection<Meal> getAll(int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
-        if (!meals.isEmpty()) {
+        if (meals == null || meals.isEmpty())
+            return Collections.EMPTY_LIST;
+        else
             return meals.values().stream().
                     sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
-        }
-        else return Collections.EMPTY_LIST;
     }
 
     @Override
     public Collection<Meal> getBetween(LocalDate startDT, LocalDate endDT, int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
-        if (!meals.isEmpty()) {
+        if (meals == null || meals.isEmpty())
+            return Collections.EMPTY_LIST;
+        else
             return meals.values().stream().
                     filter(f -> DateTimeUtil.isBetween(f.getDate(), startDT, endDT)).
                     sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
-        }
-        else return Collections.EMPTY_LIST;
     }
 }
 

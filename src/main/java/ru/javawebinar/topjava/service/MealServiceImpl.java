@@ -9,6 +9,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
+
 @Service
 public class MealServiceImpl implements MealService {
 
@@ -17,18 +19,17 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public Meal save(Meal meal, int userId) throws NotFoundException {
-        return repository.save(meal, userId);
+        return checkNotFoundWithId(repository.save(meal, userId), userId);
     }
 
     @Override
     public boolean delete(int id, int userId) throws NotFoundException {
-
-        return repository.delete(id, userId);
+        return checkNotFoundWithId((Boolean)repository.delete(id, userId), userId);
     }
 
     @Override
     public Meal get(int id, int userId) throws NotFoundException {
-        return repository.get(id, userId);
+        return checkNotFoundWithId(repository.get(id, userId), userId);
     }
 
     @Override
