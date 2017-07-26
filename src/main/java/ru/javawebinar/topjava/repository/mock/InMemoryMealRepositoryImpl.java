@@ -45,10 +45,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public boolean delete(int id, int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
-        if (meals == null || meals.isEmpty())
-            return false;
-        else
-            return meals.remove(id, meals.get(id));
+        return !(meals == null || meals.isEmpty()) && meals.remove(id, meals.get(id));
     }
 
     @Override

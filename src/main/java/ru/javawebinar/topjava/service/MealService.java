@@ -13,6 +13,8 @@ public interface MealService {
 
     Meal get(int id, int userId) throws NotFoundException;
 
+    Meal update(Meal meal, int userId) throws NotFoundException;
+
     Collection<Meal> getAll(int userId);
 
     Collection<Meal> getBetween(LocalDate startDate, LocalDate endDate, int userId);
