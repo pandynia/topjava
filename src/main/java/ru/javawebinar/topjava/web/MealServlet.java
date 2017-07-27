@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
@@ -63,7 +62,7 @@ public class MealServlet extends HttpServlet {
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
                         repository.get(getId(request), AuthorizedUser.id());
                 request.setAttribute("meal", meal);
-                request.getRequestDispatcher("/meal.jsp").forward(request, response);
+                request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "all":
             default:
