@@ -14,7 +14,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Collection;
 
-import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.UserTestData.ADMIN;
+import static ru.javawebinar.topjava.UserTestData.USER;
 
 @ContextConfiguration({"classpath:spring/spring-test.xml", "classpath:spring/spring-db.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -40,6 +41,6 @@ public class InMemoryAdminRestControllerTest {
 
     @Test(expected = NotFoundException.class)
     public void testDeleteNotFound() throws Exception {
-        repository.delete(ADMIN_ID);
+        repository.delete(10);
     }
 }
