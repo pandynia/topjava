@@ -84,8 +84,8 @@ public class MealServiceTest {
     public void update() throws Exception {
         Meal updated = USER_MEAL1;
         updated.setId(USER_MEAL1_ID);
-        updated.setDescription("UpdatedDescription");
-        updated.setCalories(600);
+        updated.setDescription("Завтрак");
+        updated.setCalories(500);
         service.update(updated, USER_ID);
         MATCHER.assertEquals(updated, service.get(USER_MEAL1_ID, USER_ID));
     }
