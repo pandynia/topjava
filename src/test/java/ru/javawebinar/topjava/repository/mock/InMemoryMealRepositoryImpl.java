@@ -15,7 +15,6 @@ import java.time.Month;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -42,23 +41,22 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        Objects.requireNonNull(meal);
-
+/*
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
         } else if (get(meal.getId(), userId) == null) {
             return null;
         }
         Map<Integer, Meal> meals = repository.computeIfAbsent(userId, ConcurrentHashMap::new);
-        meals.put(meal.getId(), meal);
-        return meal;
+        return meals.put(meal.getId(), meal);
+*/
 
-/*        Map<Integer, Meal> meals = repository.computeIfAbsent(userId, ConcurrentHashMap::new);
+        Map<Integer, Meal> meals = repository.computeIfAbsent(userId, ConcurrentHashMap::new);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             return meals.put(meal.getId(), meal);
         }
-        return meals.computeIfPresent(meal.getId(), (id, oldMeal) -> meal); */
+        return meals.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @PostConstruct
