@@ -40,6 +40,8 @@ public class MealServiceTest {
     @Autowired
     private DbPopulator dbPopulator;
 
+    private Meal meal;
+
     @Before
     public void setUp() throws Exception {
         dbPopulator.execute();
@@ -69,9 +71,9 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenDateTimes() throws Exception {
-        Collection<Meal> meals = service.getBetweenDateTimes(LocalDateTime.of(2015, 5, 30, 13, 0),
-                LocalDateTime.of(2015, 5, 31, 13, 0), USER_ID);
-        MATCHER.assertCollectionEquals(Arrays.asList(USER_MEAL5, USER_MEAL4, USER_MEAL3, USER_MEAL2), meals);
+        Collection<Meal> meals = service.getBetweenDateTimes(LocalDateTime.of(2015, 5, 30, 20, 0),
+                LocalDateTime.of(2015, 6, 2, 22, 0), ADMIN_ID);
+        MATCHER.assertCollectionEquals(Arrays.asList(ADMIN_MEAL2, ADMIN_MEAL1), meals);
     }
 
     @Test
@@ -82,12 +84,12 @@ public class MealServiceTest {
 
     @Test
     public void update() throws Exception {
-        Meal updated = USER_MEAL1;
-        updated.setId(USER_MEAL1_ID);
+        Meal updated = USER_MEAL2;
+        updated.setId(USER_MEAL2_ID);
         updated.setDescription("Завтрак");
-        updated.setCalories(500);
+        updated.setCalories(600);
         service.update(updated, USER_ID);
-        MATCHER.assertEquals(updated, service.get(USER_MEAL1_ID, USER_ID));
+        MATCHER.assertEquals(updated, service.get(USER_MEAL2_ID, USER_ID));
     }
 
     @Test(expected = NotFoundException.class)

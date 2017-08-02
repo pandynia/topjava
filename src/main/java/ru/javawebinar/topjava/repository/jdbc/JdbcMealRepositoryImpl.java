@@ -19,10 +19,8 @@ import java.util.List;
 public class JdbcMealRepositoryImpl implements MealRepository {
     private static final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
-    @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private SimpleJdbcInsert insertMeal;
@@ -32,6 +30,10 @@ public class JdbcMealRepositoryImpl implements MealRepository {
         this.insertMeal = new SimpleJdbcInsert(dataSource)
                 .withTableName("meals")
                 .usingGeneratedKeyColumns("id");
+
+        jdbcTemplate = new JdbcTemplate(dataSource);
+
+        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     @Override
