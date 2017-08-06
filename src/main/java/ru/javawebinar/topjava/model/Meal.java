@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NamedQueries({
-        @NamedQuery(name = Meal.UPDATE, query = "UPDATE meals m SET m.dateTime =:dateTime, " +
+        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET m.dateTime =:dateTime, " +
                 "m.description =:description, m.calories =:calories WHERE m.id =:id and m.user_id =:user_id"),
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM meals m " +
                 "WHERE m.id =:id and m.user_id =:userId"),
