@@ -1,8 +1,13 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.*;
+import org.junit.AssumptionViolatedException;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,9 +20,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -29,14 +33,11 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
+    private static final Logger log = getLogger(MealServiceTest.class);
 
     static {
         SLF4JBridgeHandler.install();
     }
-
-    private String methodName;
-    private long start;
-    private static Map<String, Long> executionTime = new LinkedHashMap<>();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -44,59 +45,50 @@ public class MealServiceTest {
     @Autowired
     private MealService service;
 
-    private void getMethodName() {
-        methodName = new Exception().getStackTrace()[1].getMethodName();
-    }
-
-    @Before
-    public void before() {
-        start = System.currentTimeMillis();
-    }
-
-    @After
-    public void after() {
-        long diff = System.currentTimeMillis() - start;
-        System.out.printf("Total execution time: %d/n", diff);
-        executionTime.put(methodName, diff);
-        System.out.println("__________________________________________________");
-        System.out.println();
-    }
-
-    @AfterClass
-    public static void afterClass(){
-        System.out.println("__________________________________________________");
-        System.out.println();
-        System.out.println("EXECUTE TIME");
-        System.out.println();
-        System.out.printf("%-20s", "Method Name");
-        System.out.println("Time");
-        System.out.println();
-        for(Map.Entry entry : executionTime.entrySet()){
-            System.out.printf("%-20s", entry.getKey());
-            System.out.printf("%4s", entry.getValue());
-            System.out.println();
+    @Rule
+    public final Stopwatch stopwatch = new Stopwatch() {
+        protected void succeeded(long nanos, Description description) {
+            log.info(String.format("%s succeeded, time taken %d nanosecs", description.getMethodName(), nanos));
         }
-        System.out.println("__________________________________________________");
-        System.out.println();
-    }
+
+        /**
+         * Invoked when a test fails
+         */
+        protected void failed(long nanos, Throwable e, Description description) {
+            log.info(String.format("%s failed, time taken %d nanosecs", description.getMethodName(), nanos));
+        }
+
+        /**
+         * Invoked when a test is skipped due to a failed assumption.
+         */
+        protected void skipped(long nanos, AssumptionViolatedException e,
+                               Description description) {
+            log.info(String.format("%s skipped, time taken %d nanosecs", description.getMethodName(), nanos));
+        }
+
+        /**
+         * Invoked when a test method finishes (whether passing or failing)
+         */
+        protected void finished(long nanos, Description description) {
+            log.info(String.format("%s finished, time taken %d nanosecs", description.getMethodName(), nanos));
+        }
+
+    };
 
     @Test
     public void testDelete() throws Exception {
-        getMethodName();
         service.delete(MEAL1_ID, USER_ID);
         MATCHER.assertCollectionEquals(Arrays.asList(MEAL6, MEAL5, MEAL4, MEAL3, MEAL2), service.getAll(USER_ID));
     }
 
     @Test//(expected = NotFoundException.class)
     public void testDeleteNotFound() throws Exception {
-        getMethodName();
         thrown.expect(NotFoundException.class);
         service.delete(MEAL1_ID, 1);
     }
 
     @Test
     public void testSave() throws Exception {
-        getMethodName();
         Meal created = getCreated();
         service.create(created, USER_ID);
         MATCHER.assertCollectionEquals(Arrays.asList(created, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1), service.getAll(USER_ID));
@@ -104,21 +96,18 @@ public class MealServiceTest {
 
     @Test
     public void testGet() throws Exception {
-        getMethodName();
         Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
         MATCHER.assertEquals(ADMIN_MEAL1, actual);
     }
 
     @Test//(expected = NotFoundException.class)
     public void testGetNotFound() throws Exception {
-        getMethodName();
         thrown.expect(NotFoundException.class);
         service.get(MEAL1_ID, ADMIN_ID);
     }
 
     @Test
     public void testUpdate() throws Exception {
-        getMethodName();
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
         MATCHER.assertEquals(updated, service.get(MEAL1_ID, USER_ID));
@@ -126,20 +115,17 @@ public class MealServiceTest {
 
     @Test//(expected = NotFoundException.class)
     public void testUpdateNotFound() throws Exception {
-        getMethodName();
         thrown.expect(NotFoundException.class);
         service.update(MEAL1, ADMIN_ID);
     }
 
     @Test
     public void testGetAll() throws Exception {
-        getMethodName();
         MATCHER.assertCollectionEquals(MEALS, service.getAll(USER_ID));
     }
 
     @Test
     public void testGetBetween() throws Exception {
-        getMethodName();
         MATCHER.assertCollectionEquals(Arrays.asList(MEAL3, MEAL2, MEAL1),
                 service.getBetweenDates(
                         LocalDate.of(2015, Month.MAY, 30),
