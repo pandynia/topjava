@@ -29,7 +29,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class UserServiceTest extends AbstractServiceTest {
+public abstract class UserServiceTest extends AbstractServiceTest {
 
     static {
         // Only for postgres driver logging
@@ -38,7 +38,7 @@ public class UserServiceTest extends AbstractServiceTest {
     }
 
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     @Before
     public void setUp() throws Exception {
