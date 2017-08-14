@@ -11,7 +11,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
 
-import static ru.javawebinar.topjava.MealTestData.MEAL1_ID;
 import static ru.javawebinar.topjava.MealTestData.MEALS;
 import static ru.javawebinar.topjava.UserTestData.*;
 
@@ -27,13 +26,6 @@ public class DataJpaUserServiceTest extends UserServiceTest {
         MATCHER.assertEquals(USER, user);
         MealTestData.MATCHER.assertCollectionEquals(MEALS, meals);
     }
-
-    @Test
-    public void testGetWithUserNotFound() throws Exception {
-        thrown.expect(NotFoundException.class);
-        service.getWithUser(MEAL1_ID, ADMIN_ID);
-    }
-
 
     @Test(expected = NotFoundException.class)
     public void testGetWithMealsNotFound() throws Exception {

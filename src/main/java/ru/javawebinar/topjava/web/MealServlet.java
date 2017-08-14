@@ -31,7 +31,7 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
+        springContext = new ClassPathXmlApplicationContext(new String[] {"spring/spring-app.xml", "spring/spring-db.xml"}, false);
         springContext.getEnvironment().setActiveProfiles(Profiles.ACTIVE_DB, Profiles.ACTIVE_SPRING_PROFILE);
         springContext.refresh();
         mealController = springContext.getBean(MealRestController.class);
@@ -85,11 +85,10 @@ public class MealServlet extends HttpServlet {
                 break;
             case "create":
             case "update":
-                id = getId(request);
-                LOG.info("Update{}", id);
+                LOG.info("Update{}");
                 final Meal meal = "create".equals(action) ?
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        mealController.get(id);
+                        mealController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
