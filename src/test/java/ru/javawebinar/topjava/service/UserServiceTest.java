@@ -15,6 +15,7 @@ import java.util.Collections;
 
 import static ru.javawebinar.topjava.UserTestData.*;
 
+
 public abstract class UserServiceTest extends AbstractServiceTest {
 
     static {

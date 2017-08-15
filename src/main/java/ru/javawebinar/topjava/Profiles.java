@@ -11,9 +11,7 @@ public class Profiles {
             HSQLDB="hsqldb";
 
 
-    public static final String REPOSITORY_IMPLEMENTATION = DATAJPA;
-    //public static final String ACTIVE_DB = POSTGRES;
-    //public static final String ACTIVE_SPRING_PROFILE = DATAJPA;
+    public static final String REPOSITORY_IMPLEMENTATION = JPA;
 
     //  Get DB profile depending of DB driver in classpath
     public static String getActiveDbProfile() {
