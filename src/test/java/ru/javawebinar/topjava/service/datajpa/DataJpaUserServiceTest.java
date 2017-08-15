@@ -17,7 +17,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 /**
  * Created by Ruslan on 14.08.2017.
  */
-@ActiveProfiles({Profiles.ACTIVE_DB, Profiles.DATAJPA})
+@ActiveProfiles({Profiles.DATAJPA})
 public class DataJpaUserServiceTest extends UserServiceTest {
     @Test
     public void testGetWithMeal() throws Exception {

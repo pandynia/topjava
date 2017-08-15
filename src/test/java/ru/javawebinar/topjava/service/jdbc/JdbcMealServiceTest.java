@@ -7,6 +7,6 @@ import ru.javawebinar.topjava.service.MealServiceTest;
 /**
  * Created by Ruslan on 15.08.2017.
  */
-@ActiveProfiles({Profiles.ACTIVE_DB, Profiles.JDBC})
+@ActiveProfiles({Profiles.JDBC})
 public class JdbcMealServiceTest extends MealServiceTest {
 }
