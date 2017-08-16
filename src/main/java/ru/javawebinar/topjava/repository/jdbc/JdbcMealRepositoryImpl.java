@@ -21,19 +21,20 @@ public abstract class JdbcMealRepositoryImpl implements MealRepository {
 
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
-    @Autowired
-    protected JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private final SimpleJdbcInsert insertMeal;
 
     @Autowired
-    protected NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    protected SimpleJdbcInsert insertMeal;
-
-    @Autowired
-    public JdbcMealRepositoryImpl(DataSource dataSource) {
+    public JdbcMealRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(dataSource)
                 .withTableName("meals")
                 .usingGeneratedKeyColumns("id");
+
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
