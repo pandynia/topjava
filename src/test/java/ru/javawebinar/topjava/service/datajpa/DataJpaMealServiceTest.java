@@ -16,7 +16,7 @@ import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 /**
  * Created by Ruslan on 14.08.2017.
  */
-@ActiveProfiles({Profiles.DATAJPA})
+@ActiveProfiles({Profiles.DATAJPA, Profiles.POSTGRES})
 public class DataJpaMealServiceTest extends MealServiceTest {
     @Test
     public void testGetWithUser() throws Exception {

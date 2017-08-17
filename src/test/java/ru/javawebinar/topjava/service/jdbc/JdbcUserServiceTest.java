@@ -7,6 +7,6 @@ import ru.javawebinar.topjava.service.UserServiceTest;
 /**
  * Created by Ruslan on 15.08.2017.
  */
-@ActiveProfiles({Profiles.JDBC})
+@ActiveProfiles({Profiles.JDBC, Profiles.POSTGRES})
 public class JdbcUserServiceTest extends UserServiceTest {
 }

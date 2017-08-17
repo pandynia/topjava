@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
@@ -17,9 +17,9 @@ import java.util.List;
 public class SpringMain {
     public static void main(String[] args) {
         // java 7 Automatic resource management
-        try (ClassPathXmlApplicationContext appCtx = new ClassPathXmlApplicationContext()) {
-            ((ConfigurableEnvironment)appCtx.getEnvironment()).setActiveProfiles("postgres", "datajpa");
-            appCtx.setConfigLocations("spring/spring-app.xml","spring/spring-db.xml");
+        try (GenericXmlApplicationContext appCtx = new GenericXmlApplicationContext()) {
+            ((ConfigurableEnvironment)appCtx.getEnvironment()).setActiveProfiles(Profiles.POSTGRES, Profiles.JDBC);
+            appCtx.load("spring/spring-db.xml","spring/spring-app.xml");
             appCtx.refresh();
 
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
