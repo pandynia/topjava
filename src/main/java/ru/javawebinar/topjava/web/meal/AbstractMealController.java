@@ -3,9 +3,15 @@ package ru.javawebinar.topjava.web.meal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.AuthorizedUser;
+import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealWithExceed;
+import ru.javawebinar.topjava.util.DateTimeUtil;
+import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
@@ -15,37 +21,51 @@ public abstract class AbstractMealController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private UserService service;
+    protected MealService service;
 
-    public List<User> getAll() {
-        log.info("getAll");
-        return service.getAll();
+    public Meal get(int id) {
+        int userId = AuthorizedUser.id();
+        log.info("get meal {} for userId", id, userId);
+        return service.get(id, userId);
     }
 
-    public User get(int id) {
-        log.info("get {}", id);
-        return service.get(id);
+    public List<MealWithExceed> getAll() {
+        int userId = AuthorizedUser.id();
+        log.info("getAll for userId={}", userId);
+        return MealsUtil.getWithExceeded(service.getAll(userId), AuthorizedUser.getCaloriesPerDay());
     }
 
-    public User create(User user) {
-        log.info("create {}", user);
-        checkNew(user);
-        return service.create(user);
+    public Meal create(Meal meal) {
+        int userId = AuthorizedUser.id();
+        log.info("create {} for userId={}", meal, userId);
+        checkNew(meal);
+        return service.create(meal, userId);
     }
 
     public void delete(int id) {
-        log.info("delete {}", id);
-        service.delete(id);
+        int userId = AuthorizedUser.id();
+        log.info("delete meal {} for userId", id, userId);
+        service.delete(id, userId);
     }
 
-    public void update(User user, int id) {
-        log.info("update {} with id={}", user, id);
-        assureIdConsistent(user, id);
-        service.update(user);
+    public void update(Meal meal, int id) {
+        int userId = AuthorizedUser.id();
+        log.info("update {} with id={} for userId={}", meal, id, userId);
+        assureIdConsistent(meal, id);
+        service.update(meal, userId);
     }
 
-    public User getByMail(String email) {
-        log.info("getByEmail {}", email);
-        return service.getByEmail(email);
+    public List<MealWithExceed> getBetween(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+        int userId = AuthorizedUser.id();
+        log.info("getBetween dates({} - {}) time({} - {}) for userId={}", startDate, endDate, startTime, endTime, userId);
+
+        return MealsUtil.getFilteredWithExceeded(
+                service.getBetweenDates(
+                        startDate != null ? startDate : DateTimeUtil.MIN_DATE,
+                        endDate != null ? endDate : DateTimeUtil.MAX_DATE, userId),
+                startTime != null ? startTime : LocalTime.MIN,
+                endTime != null ? endTime : LocalTime.MAX,
+                AuthorizedUser.getCaloriesPerDay()
+        );
     }
 }

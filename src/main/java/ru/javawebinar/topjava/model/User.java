@@ -7,13 +7,11 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
@@ -28,7 +26,7 @@ import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
 public class User extends AbstractNamedEntity {
 
-//    public static final String GRAPH_WITH_MEALS = "User.withMeals";
+    public static final String GRAPH_WITH_MEALS = "User.withMeals";
 
     public static final String DELETE = "User.delete";
     public static final String BY_EMAIL = "User.getByEmail";
@@ -128,6 +126,10 @@ public class User extends AbstractNamedEntity {
         return roles;
     }
 
+    public void setRoles(Collection<Role> roles) {
+       this.roles = CollectionUtils.isEmpty(roles) ? Collections.emptySet() : EnumSet.copyOf(roles);
+    }
+
     public String getPassword() {
         return password;
     }
@@ -147,4 +149,6 @@ public class User extends AbstractNamedEntity {
                 ", caloriesPerDay=" + caloriesPerDay +
                 '}';
     }
+
+
 }
