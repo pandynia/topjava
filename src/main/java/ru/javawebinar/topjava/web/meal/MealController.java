@@ -20,7 +20,7 @@ public class MealController extends AbstractMealController {
     @RequestMapping(method = RequestMethod.GET)
     public String getAll(Model model) {
         model.addAttribute("meals", super.getAll());
-        return "meal";
+        return "meals";
     }
 
     @RequestMapping(params = "action=delete", method = RequestMethod.GET)

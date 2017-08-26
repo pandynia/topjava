@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service.jdbc;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 
@@ -14,4 +15,8 @@ public class JdbcUserServiceTest extends AbstractUserServiceTest {
     public void setUp() {
         service.evictCache();
     }
+
+    @Override
+    @Test
+    public void testValidation() throws Exception {}
 }
