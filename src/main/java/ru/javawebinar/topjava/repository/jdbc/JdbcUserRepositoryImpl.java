@@ -48,7 +48,6 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            user.setId(newKey.intValue());
         } else {
             deleteRoles(user);
             insertRoles(user);
