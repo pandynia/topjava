@@ -52,6 +52,7 @@ public class MealRestController extends AbstractMealController {
 
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MealWithExceed> getBetween(
+            //@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate startDate,
             @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
