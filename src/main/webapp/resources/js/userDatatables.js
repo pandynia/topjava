@@ -39,10 +39,18 @@ $(function () {
         ]
     });
     makeEditable();
-    checkBox();
-});
+    checkEnable()
 
-function checkBox() {
+
+});
+function newUpdateTable(){
+
+    $.get(ajaxUrl, function (data) {
+        datatableApi.clear().rows.add(data).draw();
+    });
+
+}
+function checkEnable() {
     $("input:checkbox").click(function () {
 
         var check_id = $(this).parents('tr').attr("id");
@@ -53,9 +61,11 @@ function checkBox() {
             type: 'POST',
             data: "checked="+check,
             success: function () {
-                updateTable();
+                newUpdateTable();
                 successNoty('update');
             }
         });
+
     });
+
 }

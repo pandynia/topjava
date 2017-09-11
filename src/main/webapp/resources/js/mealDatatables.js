@@ -1,8 +1,6 @@
-/**
- * Created by Ruslan on 11.09.2017.
- */
 var ajaxUrl = 'ajax/profile/meals/';
 var ajaxFilterUri= 'ajax/profile/meals/filter';
+var filterData;
 var datatableApi;
 
 // $(document).ready(function () {
@@ -42,12 +40,14 @@ $(function () {
 
 function undoFilterTable() {
     $("#filterDetails").find(":input").val("");
-    updateTable();
+    filterData=null;
+    newUpdateTable();
 }
 
-function filterDate() {
+function newUpdateTable() {
     var form = $("#filterDetails");
-    $.get(ajaxFilterUri,form.serialize(), function (data) {
+    filterData=form.serialize();
+    $.get(ajaxFilterUri,filterData, function (data) {
         datatableApi.clear().rows.add(data).draw();
     })
 }
