@@ -18,40 +18,40 @@ import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 public abstract class AbstractMealController {
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private MealService service;
 
     public Meal get(int id) {
         int userId = AuthorizedUser.id();
-        log.info("get meal {} for User {}", id, userId);
+        LOG.info("get meal {} for User {}", id, userId);
         return service.get(id, userId);
     }
 
     public void delete(int id) {
         int userId = AuthorizedUser.id();
-        log.info("delete meal {} for User {}", id, userId);
+        LOG.info("delete meal {} for User {}", id, userId);
         service.delete(id, userId);
     }
 
     public List<MealWithExceed> getAll() {
         int userId = AuthorizedUser.id();
-        log.info("getAll for User {}", userId);
+        LOG.info("getAll for User {}", userId);
         return MealsUtil.getWithExceeded(service.getAll(userId), AuthorizedUser.getCaloriesPerDay());
     }
 
     public Meal create(Meal meal) {
         int userId = AuthorizedUser.id();
         checkNew(meal);
-        log.info("create {} for User {}", meal, userId);
-        return service.create(meal, userId);
+        LOG.info("create {} for User {}", meal, userId);
+        return service.save(meal, userId);
     }
 
     public void update(Meal meal, int id) {
         int userId = AuthorizedUser.id();
         assureIdConsistent(meal, id);
-        log.info("update {} for User {}", meal, userId);
+        LOG.info("update {} for User {}", meal, userId);
         service.update(meal, userId);
     }
 
@@ -63,7 +63,7 @@ public abstract class AbstractMealController {
      */
     public List<MealWithExceed> getBetween(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         int userId = AuthorizedUser.id();
-        log.info("getBetween dates({} - {}) time({} - {}) for User {}", startDate, endDate, startTime, endTime, userId);
+        LOG.info("getBetween dates({} - {}) time({} - {}) for User {}", startDate, endDate, startTime, endTime, userId);
 
         return MealsUtil.getFilteredWithExceeded(
                 service.getBetweenDates(
