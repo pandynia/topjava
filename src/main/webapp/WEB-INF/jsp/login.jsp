@@ -21,6 +21,7 @@
                     <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
                 </button>
             </form:form>
+            <jsp:include page="fragments/locale.jsp"/>
         </div>
     </div>
 </div>

@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.meal;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +40,7 @@ public class MealAjaxController extends AbstractMealController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createOrUpdate(@Validated(View.ValidatedUI.class) Meal meal, BindingResult result) {
+    public String createOrUpdate(@Validated(View.ValidatedUI.class) Meal meal, BindingResult result) {
         if (result.hasErrors()) {
             // TODO change to exception handler
             return ValidationUtil.getErrorResponse(result);
@@ -51,7 +50,7 @@ public class MealAjaxController extends AbstractMealController {
         } else {
             super.update(meal, meal.getId());
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return HttpStatus.OK.toString();
     }
 
     @Override
