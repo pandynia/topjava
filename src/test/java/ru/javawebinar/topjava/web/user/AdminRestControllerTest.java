@@ -3,11 +3,12 @@ package ru.javawebinar.topjava.web.user;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
-import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -82,14 +83,34 @@ public class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void testValidationUpdate() throws Exception {
+        mockMvc.perform(put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(JSON_VALIDATION_USER_WITH_PASSWORD))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    public void testDuplicateEmail() throws Exception {
+        mockMvc.perform(put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(JSON_DUPLICATE_EMAIL_USER_WITH_PASSWORD))
+                .andExpect(status().isConflict())
+                .andExpect(content().json("{'detail':'User with this email already exists'}"));
+    }
+
+    @Test
     public void testUpdate() throws Exception {
         User updated = new User(USER);
-        updated.setName("UpdatedName");
+        updated.setName("UpdatedUser");
         updated.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
         mockMvc.perform(put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
-                .content(JsonUtil.writeValue(updated)))
+                .content(JSON_UPDATED_USER_WITH_PASSWORD))
                 .andExpect(status().isOk());
 
         MATCHER.assertEquals(updated, userService.get(USER_ID));

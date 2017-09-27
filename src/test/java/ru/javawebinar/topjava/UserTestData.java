@@ -11,6 +11,7 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 public class UserTestData {
     public static final int USER_ID = START_SEQ;
     public static final int ADMIN_ID = START_SEQ + 1;
+    public static final String JSON_UPDATED_USER_WITH_PASSWORD = "{\"id\":\"100000\",\"name\":\"UpdatedUser\",\"email\":\"user@yandex.ru\",\"password\":\"password\",\"enabled\":true,\"registered\":\"2017-09-20T09:12:40.953+0000\",\"roles\":[\"ROLE_ADMIN\"],\"caloriesPerDay\":2005}";
 
     public static final User USER = new User(USER_ID, "User", "user@yandex.ru", "password", 2005, Role.ROLE_USER);
     public static final User ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", 1900, Role.ROLE_ADMIN, Role.ROLE_USER);
@@ -28,4 +29,7 @@ public class UserTestData {
 
     public static final User NEW_USER = new User(null, "New", "new@gmail.com", "newPass", 2300, Role.ROLE_USER, Role.ROLE_ADMIN);
     public static final String JSON_NEW_USER_WITH_PASSWORD = "{\"name\":\"New\",\"email\":\"new@gmail.com\",\"password\":\"password\",\"enabled\":true,\"registered\":\"2017-09-20T09:12:40.953+0000\",\"roles\":[\"ROLE_USER\",\"ROLE_ADMIN\"],\"caloriesPerDay\":2300}";
+
+    public static final String JSON_VALIDATION_USER_WITH_PASSWORD = "{\"id\":\"100000\",\"name\":\"UpdatedUser\",\"email\":\"user@yandex.ru\",\"password\":\"password\",\"enabled\":true,\"registered\":\"2017-09-20T09:12:40.953+0000\",\"roles\":[\"ROLE_ADMIN\"],\"caloriesPerDay\":1}";
+    public static final String JSON_DUPLICATE_EMAIL_USER_WITH_PASSWORD = "{\"id\":\"100000\",\"name\":\"User\",\"email\":\"admin@gmail.com\",\"password\":\"password\",\"enabled\":true,\"registered\":\"2017-09-20T09:12:40.953+0000\",\"roles\":[\"ROLE_USER\"],\"caloriesPerDay\":1000}";
 }
